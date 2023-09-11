@@ -1,7 +1,7 @@
 <template>
   <router-link :to="url" class="employee">
     <img class="employee__img" src="~@/assets/avatar.png" alt="avatar"/>
-    <div class="employee__info">
+    <div class="employee__info" :class="{'active': id === Number(this.$route.params.id)}">
       <p class="employee__name">{{ username }}</p>
       <span class="employee__mail">{{ email }}</span>
     </div>
