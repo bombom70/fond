@@ -29,7 +29,7 @@ export default {
 .sidebar {
   width: 100%;
   max-width: 350px;
-  padding: 20px 30px;
+  padding: 20px 30px 43px 30px;
 }
 
 .mg-b-14 {
