@@ -2,13 +2,11 @@
   <div class="sidebar">
     <SearchForm />
     <h2 class="title-2 mg-b-14">Результаты</h2>
-    <span v-if="!getValue" class="msg-result">Начните поиск</span>
-    <EmployeeList v-else/>
+    <EmployeeList/>
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
 import EmployeeList from './EmployeeList.vue';
 import SearchForm from './SearchForm.vue';
 
@@ -18,9 +16,6 @@ export default {
     EmployeeList,
     SearchForm,
   },
-  computed: {
-    ...mapGetters(['getValue'])
-  },
 }
 </script>
 
@@ -29,20 +24,17 @@ export default {
 .sidebar {
   width: 100%;
   max-width: 350px;
-  padding: 20px 30px 43px 30px;
+  padding: 20px 30px 71px 30px;
 }
 
 .mg-b-14 {
   margin-bottom: 14px;
 }
 
-.msg-result {
-  color: $gray;
-}
-
 @media (max-width:768px) {
   .sidebar {
     max-width: 100%;
+    padding-bottom: 20px;
   }
 }
 </style>

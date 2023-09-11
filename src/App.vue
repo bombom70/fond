@@ -1,5 +1,5 @@
 <template>
-  <Header/>
+  <Header />
   <main class="container main">
     <Sidebar />
     <RouterView />
@@ -7,7 +7,6 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
 import Header from './components/Header.vue';
 import Sidebar from './components/Sidebar.vue';
 
@@ -17,14 +16,6 @@ export default {
     Header,
     Sidebar
   },
-  methods: {
-    ...mapActions([
-      'fetch'
-    ]),
-  },
-  created() {
-    this.fetch();
-  }
 }
 </script>
 

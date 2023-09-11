@@ -1,3 +1,52 @@
+<script setup>
+import { onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
+import _ from 'lodash';
+import qs from 'query-string';
+import { useStore } from 'vuex';
+
+const router = useRouter();
+const store = useStore();
+const inputValue = ref("");
+
+const doSearch = (value) => {
+  if (_.isEmpty(value)) {
+    router.push('/');
+    store.dispatch('fetch', {});
+    return;
+  }
+  const parsed = qs.parse(location.search);
+  if (Number(value)) {
+    parsed.id = value;
+    parsed.name = null;
+  } else {
+    parsed.id = null;
+    parsed.name = value.split(',').map(v => _.capitalize(v.trim())).join(',');
+  }
+  const newUrl = qs.stringifyUrl({
+      url: '/',
+      query: {
+        ...parsed
+      }
+    }, {
+      skipEmptyString: true,
+      skipNull: true,
+    });
+    router.push(newUrl);
+    store.dispatch('fetch', parsed);
+}
+
+const search = _.debounce(doSearch, 1000);
+
+onMounted(() => {
+  const parsed = qs.parse(location.search);
+  const key = Object.keys(parsed)[0];
+  inputValue.value = parsed[key];
+  doSearch(parsed[key]);
+});
+
+</script>
+
 <template>
   <div class="search">
     <h2 class="search__title title-2">Поиск сотрудников</h2>
@@ -5,23 +54,12 @@
       type="text"
       placeholder="Введите id или имя"
       class="input"
-      @input="search"
+      @input="search($event.target.value)"
+      :value="inputValue"
     />
   </div>
 </template>
-<script>
-import { mapMutations } from 'vuex';
 
-export default {
-  name: 'search',
-  methods: {
-    ...mapMutations(['changeValue']),
-    search({ target }) {
-      this.changeValue(target.value.trim());
-    }
-  },
-}
-</script>
 <style lang="scss" scoped>
 @import "../assets/styles/variables.scss";
 .search {

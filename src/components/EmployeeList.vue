@@ -1,9 +1,12 @@
 <template>
   <div class="emploee-lits">
-    <span v-if="filteredUsers.length < 1">ничего не найдено</span>
+    <span class="msg-result" v-if="getStatus === 'idle' || (!$route.query.id && !$route.query.name)">Начните поиск</span>
+    <div v-else-if="getStatus === 'loading'">Loading...</div>
+    <div v-else-if="getStatus === 'failed'">Упс, что-то пошло не так...</div>
+    <span v-else-if="getUsers.length < 1 && getStatus === 'succeeded'">ничего не найдено</span>
     <EmployeeItem
       v-else
-      v-for="employee in filteredUsers"
+      v-for="employee in getUsers"
       :key="employee.id"
       :id="employee.id"
       :username="employee.username"
@@ -22,7 +25,7 @@ export default {
     EmployeeItem,
   },
   computed: {
-    ...mapGetters(['filteredUsers'])
+    ...mapGetters(['getUsers', 'getStatus'])
   },
 }
 </script>
@@ -34,9 +37,13 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 18px;
-  overflow-y: scroll;
+  overflow-y: auto;
   width: 321px;
   height: 100%;
+}
+
+.msg-result {
+  color: $gray;
 }
 
 @media (max-width: 768px) {

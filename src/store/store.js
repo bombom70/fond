@@ -1,9 +1,11 @@
 import { createStore } from "vuex";
 import { fetchUsers } from "../network/users";
+import _ from 'lodash';
+
 const store = createStore({
   state() {
     return {
-      value: "",
+      status: 'idle',
       users: []
     }
   },
@@ -11,31 +13,44 @@ const store = createStore({
     addUsers(state, payload) {
       state.users = payload;
     },
-    changeValue(state, payload) {
-      state.value = payload;
+    changeStatus(state, payload) {
+      state.status = payload;
     }
   },
   actions: {
-    fetch({ commit }) {
-      fetchUsers().then(res => commit('addUsers', res));
+    async fetch({ commit }, params) {
+      try {
+        if (_.isEmpty(params)) {
+          commit('addUsers', []);
+          return ;
+        } else if (params?.name) {
+          commit('changeStatus', 'loading');
+          const promises = params.name.split(',').map(name => {
+            return fetchUsers({ username: name });
+          });
+          const resultData = await Promise.all(promises);
+          commit('addUsers', _.flatten(resultData));
+        } else if (params?.id) {
+          commit('changeStatus', 'loading');
+          const resultData = await fetchUsers(params);
+          commit('addUsers', resultData);
+        }
+        commit('changeStatus', 'succeeded');
+      } catch (error) {
+        commit('changeStatus', 'failed');
+      }
     }
   },
   getters: {
-    filteredUsers: (state) => {
-      const values = state.value.toLowerCase().split(",");
-      const prepareValues = values.map(v => v.trim());
-      return state.users.filter(({ id, username }) => {
-        return username.toLowerCase().includes(state.value.toLowerCase()) 
-          || prepareValues.indexOf(username.toLowerCase()) > -1
-          || id === Number(state.value);
-      });
+    getUsers: (state) => {
+      return state.users;
     },
     getById: (state) => (id) => {
       return state.users.find(u => u.id === Number(id));
     },
-    getValue: (state) => {
-      return state.value;
-    }
+    getStatus: (state) => {
+      return state.status;
+    },
   }
 });
 
