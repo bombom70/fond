@@ -35,6 +35,7 @@ export default {
   height: 70px;
 }
 .employee__info {
+  width: 100%;
   padding: 15px;
 }
 .employee__name {

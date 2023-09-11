@@ -35,6 +35,13 @@ export default {
   flex-direction: column;
   gap: 18px;
   overflow-y: scroll;
+  width: 321px;
   height: 100%;
+}
+
+@media (max-width: 768px) {
+  .emploee-lits {
+    width: 100%;
+  }
 }
 </style>
